@@ -97,6 +97,12 @@ app.layout = dmc.MantineProvider(
                             justify="space-between",
                             align="center",
                             children=[
+                                dmc.Burger(
+                                    id="burger-button",
+                                    opened=False,
+                                    hiddenFrom="sm",
+                                    size="sm",
+                                ),
                                 dmc.Title(APP_NAME, order=2),
                                 dmc.Switch(
                                     id="theme-switch",
@@ -108,28 +114,36 @@ app.layout = dmc.MantineProvider(
                         ),
                     ),
                 ),
-                dmc.AppShellSidebar(
-                    children=dmc.ScrollArea(
-                        offsetScrollbars=True,
-                        children=[
-                            dmc.Text("Navigation", size="sm", fw=700, mt=10, mb=10),
-                            dmc.Stack(
-                                children=[
-                                    dmc.Text(f"📄 {info['metadata'].get('title', k.replace('.md', '').replace('_', ' ').title())}", size="sm")
-                                    for k, info in content_files.items()
-                                ] if content_files else [dmc.Text("No documents yet")],
-                            ),
-                            dmc.Divider(my=20),
-                            dmc.Text("Recent", size="sm", fw=700, mt=10, mb=10),
-                            dmc.List(
-                                size="sm",
-                                children=[
-                                    dmc.ListItem(f"📄 {f['title']} ({f['modified']})")
-                                    for f in modified_files[:5]
-                                ] if modified_files else [dmc.ListItem("No files yet")],
-                            ),
-                        ],
-                    ),
+                dmc.AppShellNavbar(
+                    id="appshell-navbar",
+                    p="md",
+                    width={"sm": 200, "lg": 300},
+                    hiddenBreakpoints=["sm"],
+                    hidden=True,
+                    children=[
+                        dmc.ScrollArea(
+                            type="auto",
+                            offsetScrollbars=True,
+                            children=[
+                                dmc.Text("Navigation", size="sm", fw=700, mt=10, mb=10),
+                                dmc.Stack(
+                                    children=[
+                                        dmc.Text(f"📄 {info['metadata'].get('title', k.replace('.md', '').replace('_', ' ').title())}", size="sm")
+                                        for k, info in content_files.items()
+                                    ] if content_files else [dmc.Text("No documents yet")],
+                                ),
+                                dmc.Divider(my=20),
+                                dmc.Text("Recent", size="sm", fw=700, mt=10, mb=10),
+                                dmc.List(
+                                    size="sm",
+                                    children=[
+                                        dmc.ListItem(f"📄 {f['title']} ({f['modified']})")
+                                        for f in modified_files[:5]
+                                    ] if modified_files else [dmc.ListItem("No files yet")],
+                                ),
+                            ],
+                        ),
+                    ],
                 ),
                 dmc.AppShellMain(
                     children=dmc.Container(
@@ -139,11 +153,19 @@ app.layout = dmc.MantineProvider(
                     ),
                 ),
             ],
+            header={"height": 60},
+            navbar={"width": {"sm": 200, "lg": 300}, "breakpoint": "sm", "collapsed": {"mobile": True}},
         ),
     ],
 )
 
 # --- Callbacks ---
+@app.callback(Output("appshell-navbar", "hidden"), Input("burger-button", "opened"), dmc.State("appshell-navbar", "hidden"))
+def toggle_navbar(opened, hidden):
+    if opened:
+        return not hidden
+    return hidden
+
 @app.callback(Output("page-content", "children"), Input("url", "pathname"))
 def render_page(pathname):
     if not pathname or pathname == "/":
