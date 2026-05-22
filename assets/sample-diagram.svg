@@ -1,0 +1,10 @@
+<svg width="400" height="200" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+  <rect x="20" y="20" width="360" height="160" rx="10" fill="#f0f0f0" stroke="#333" stroke-width="2"/>
+  <text x="200" y="45" text-anchor="middle" font-size="20" font-weight="bold">Obsurdian System Diagram</text>
+  <rect x="40" y="60" width="100" height="40" rx="5" fill="#6366f1" stroke="#333"/>
+  <text x="90" y="85" text-anchor="middle" fill="white" font-size="14">Input</text>
+  <rect x="260" y="60" width="100" height="40" rx="5" fill="#10b981" stroke="#333"/>
+  <text x="310" y="85" text-anchor="middle" fill="white" font-size="14">Output</text>
+  <path d="M140 80 L260 80" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="200" y="70" text-anchor="middle" font-size="12">Processing</text>
+</svg>
