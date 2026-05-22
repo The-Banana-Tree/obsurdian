@@ -3,10 +3,12 @@ from dash import Dash, html, dcc, Input, Output
 import dash_mantine_components as dmc
 from pathlib import Path
 import re
+import os
 from datetime import datetime
 
 # --- Config ---
 APP_NAME = "Obsurdian"
+PORT = int(os.environ.get("PORT", 8050))
 
 # --- Metadata Parser ---
 def parse_frontmatter(text):
@@ -54,11 +56,6 @@ def auto_number_headings(text):
             result.append(line)
     return "\n".join(result)
 
-# --- Preprocess markdown ---
-def preprocess_markdown(text):
-    text = auto_number_headings(text)
-    return text
-
 # --- Load content ---
 def load_content_folder(folder="content"):
     content = {}
@@ -75,7 +72,7 @@ def load_content_folder(folder="content"):
                 "modified": datetime.fromtimestamp(file_path.stat().st_mtime).strftime("%Y-%m-%d %H:%M"),
                 "title": metadata.get("title", file_path.stem.replace("-", " ").title())
             })
-            content[str(file_path)] = {"metadata": metadata, "content": preprocess_markdown(body)}
+            content[str(file_path)] = {"metadata": metadata, "content": auto_number_headings(body)}
         except Exception as e:
             print(f"Error: {e}")
     return content, modified_files
@@ -122,13 +119,7 @@ app.layout = dmc.MantineProvider(
                             dmc.Text("Navigation", size="sm", fw=700, mt=10, mb=10),
                             dmc.Stack(
                                 children=[
-                                    dmc.Group(
-                                        justify="space-between",
-                                        children=[
-                                            dmc.Text(f"📄 {info['metadata'].get('title', k.replace('.md', '').replace('_', ' ').title())}", size="sm"),
-                                            dmc.Anchor("View", href=f"#{k}", size="xs", color="blue")
-                                        ]
-                                    )
+                                    dmc.Text(f"📄 {info['metadata'].get('title', k.replace('.md', '').replace('_', ' ').title())}", size="sm")
                                     for k, info in content_files.items()
                                 ] if content_files else [dmc.Text("No documents yet")],
                             ),
@@ -201,4 +192,4 @@ def render_page(pathname):
 
 # --- Run server ---
 if __name__ == "__main__":
-    app.run_server(debug=True, host="0.0.0.0", port=8050)
+    app.run_server(host="0.0.0.0", port=PORT, debug=True)
