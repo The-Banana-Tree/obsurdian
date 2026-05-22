@@ -89,31 +89,27 @@ app.layout = dmc.MantineProvider(
     theme={"colorScheme": "dark", "fontFamily": "'Inter', sans-serif"},
     children=[
         dmc.AppShell(
-            header={
-                "height": 60,
-                "children": dmc.Container(
-                    fluid=True,
-                    children=dmc.Group(
-                        justify="space-between",
-                        align="center",
-                        children=[
-                            dmc.Title(APP_NAME, order=2),
-                            dmc.Switch(
-                                id="theme-switch",
-                                offLabel=html.Span("🌙", style={"fontSize": 18}),
-                                onLabel=html.Span("☀️", style={"fontSize": 18}),
-                                checked=True,
-                            ),
-                        ],
+            children=[
+                dmc.AppShellHeader(
+                    children=dmc.Container(
+                        fluid=True,
+                        children=dmc.Group(
+                            justify="space-between",
+                            align="center",
+                            children=[
+                                dmc.Title(APP_NAME, order=2),
+                                dmc.Switch(
+                                    id="theme-switch",
+                                    offLabel=html.Span("🌙", style={"fontSize": 18}),
+                                    onLabel=html.Span("☀️", style={"fontSize": 18}),
+                                    checked=True,
+                                ),
+                            ],
+                        ),
                     ),
                 ),
-            },
-            sidebar={
-                "width": 300,
-                "breakpoint": "sm",
-                "collapsed": {"mobile": True},
-                "children": [
-                    dmc.ScrollArea(
+                dmc.AppShellSidebar(
+                    children=dmc.ScrollArea(
                         offsetScrollbars=True,
                         children=[
                             dmc.Text("Navigation", size="sm", fw=700, mt=10, mb=10),
@@ -123,7 +119,7 @@ app.layout = dmc.MantineProvider(
                                     for k, info in content_files.items()
                                 ] if content_files else [dmc.Text("No documents yet")],
                             ),
-                            dmc.Divider(mY=20),
+                            dmc.Divider(my=20),
                             dmc.Text("Recent", size="sm", fw=700, mt=10, mb=10),
                             dmc.List(
                                 size="sm",
@@ -134,13 +130,13 @@ app.layout = dmc.MantineProvider(
                             ),
                         ],
                     ),
-                ],
-            },
-            main=[
-                dmc.Container(
-                    fluid=True,
-                    p="md",
-                    children=[html.Div(id="page-content")],
+                ),
+                dmc.AppShellMain(
+                    children=dmc.Container(
+                        fluid=True,
+                        p="md",
+                        children=[html.Div(id="page-content")],
+                    ),
                 ),
             ],
         ),
