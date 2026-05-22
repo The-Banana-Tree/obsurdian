@@ -1,5 +1,7 @@
 # Obsurdian
 
+> **Note:** Originally built with Streamlit, migrated to Dash for better nested accordion support.
+
 A system engineering documentation portal built with Dash and Dash Mantine Components.
 
 ## Features

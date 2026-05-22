@@ -4,11 +4,7 @@ import dash_mantine_components as dmc
 from dash.exceptions import PreventUpdate
 from pathlib import Path
 import markdown
-from markdown import Extension
-from markdown.preprocessors import Preprocessor
 import re
-import os
-import json
 from datetime import datetime
 
 # --- Config ---
@@ -141,32 +137,6 @@ def load_content_folder(folder="content"):
     
     return content, modified_files
 
-# --- Build folder tree ---
-def build_folder_tree(content_files, prefix=""):
-    """Build nested folder tree structure."""
-    folders = {}
-    files = []
-    
-    for key in content_files.keys():
-        if prefix and not key.startswith(prefix):
-            continue
-        
-        rel = key[len(prefix):] if prefix else key
-        if rel.startswith("/"):
-            rel = rel[1:]
-        
-        parts = rel.split("/")
-        
-        if len(parts) == 1 and parts[0]:
-            files.append((key, content_files[key]))
-        elif len(parts) > 1:
-            folder = parts[0]
-            if folder not in folders:
-                folders[folder] = []
-            folders[folder].append((key, content_files[key]))
-    
-    return folders, files
-
 # --- Load content ---
 content_files, modified_files = load_content_folder()
 
@@ -221,7 +191,7 @@ app.layout = dmc.MantineProvider(
                                 multiple=True,
                                 children=[
                                     dmc.AccordionItem(
-                                        label="📁 Content",
+                                        title="📁 Content",
                                         value="content",
                                         children=[
                                             dmc.Stack(
@@ -231,15 +201,14 @@ app.layout = dmc.MantineProvider(
                                                         multiple=True,
                                                         children=[
                                                             dmc.AccordionItem(
-                                                                label="📄 Root Documents",
+                                                                title="📄 Root Documents",
                                                                 value="root",
                                                                 children=[
                                                                     dmc.Stack(
                                                                         children=[
                                                                             dmc.Anchor(
                                                                                 info["metadata"].get("title", k.replace(".md", "").replace("_", " ").title()),
-                                                                                href=f"#{k}",
-                                                                                onClick=f"setSelected('{k}')"
+                                                                                href=f"#{k}"
                                                                             )
                                                                             for k, info in content_files.items() if "/" not in k
                                                                         ] if any("/" not in k for k in content_files.keys()) else [dmc.Text("No root documents")],
