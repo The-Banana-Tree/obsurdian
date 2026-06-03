@@ -12,24 +12,36 @@ A system engineering documentation portal.
 - Easy table syntax (`::table`)
 - Easy image syntax (`::image`)
 - Frontmatter metadata support
-- Databricks Apps compatible
+- **Databricks Apps compatible**
+- **Streamlit-powered, GitHub-hosted**
 
-## Installation
+## Installation (Streamlit)
 
 ```bash
-cd /Users/bananahq/obsurdian
+cd obsurdian
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-python app.py
+streamlit run app_streamlit.py
 ```
 
 ## Usage
 
-1. Open http://127.0.0.1:8050
+1. Open http://127.0.0.1:8501
 2. Browse documents in the sidebar
 3. Click any document to view content
-4. Toggle theme with the sun/moon icon
+
+## Databricks Apps Deploy
+
+1. Build Docker image:
+   ```bash
+   docker build -t obsurdian -f Dockerfile .
+   ```
+
+2. Push to registry and configure in Databricks Apps
+
+3. Set env vars:
+   - `STREAMLIT_SERVER_PORT=8501`
 
 ## Folder Structure
 
@@ -126,7 +138,8 @@ Status,Active
 
 ## Environment Variables
 
-- `PORT` - Server port (default: 8050)
+- `STREAMLIT_SERVER_PORT` - Streamlit port (default: 8501)
+- `PORT` - Dash port (default: 8050)
 
 ## License
 
